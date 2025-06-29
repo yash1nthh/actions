@@ -1,24 +1,39 @@
-name: display hello world
- 
-on: 
+# .github/workflows/deploy-pages.yml
+name: Deploy to GitHub Pages
+
+on:
   push:
-    branches:
-      [master]
-  pull_request:
-    branches:
-      [master]
+    branches: [main]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
 
 jobs:
-    hello:
-       runs-on: ubuntu-latest
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
 
-       steps:
-          - name: checkout repo
-            uses: actions/checkout@v4
+    runs-on: ubuntu-latest
 
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-          - name: say hello
-            run: echo 'hello'
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
 
-          - name: user checkout
-            run: whoami
+      - name: Upload to GitHub Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: index.html  # Change this if you use a different folder
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
