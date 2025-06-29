@@ -12,4 +12,7 @@ jobs:
 
 
           - name: say hello
-            run: echo "hello there!"
+            run: echo 'hello'
+
+          - name: user checkout
+            run: whoami
